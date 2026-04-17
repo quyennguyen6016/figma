@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// xương khớp
+
 class OrthopedicScheduleScreen extends StatelessWidget {
   const OrthopedicScheduleScreen({super.key});
 
