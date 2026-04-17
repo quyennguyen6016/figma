@@ -19,6 +19,7 @@ class OphthalmologyScheduleScreen extends StatelessWidget {
         experience: '10 năm kinh nghiệm',
         schedule: '9 : 00 sáng',
         accent: Color(0xFF2E7DFF),
+        imagePath: 'assets/anhbs/bs_mat_1.png',
       ),
       const Doctor(
         name: 'Bác sĩ Nguyễn Thị Hương',
@@ -26,6 +27,7 @@ class OphthalmologyScheduleScreen extends StatelessWidget {
         experience: '14 năm kinh nghiệm',
         schedule: '8 : 30 sáng',
         accent: Color(0xFF1E88E5),
+        imagePath: 'assets/anhbs/bs_mat_2.png',
       ),
       const Doctor(
         name: 'Bác sĩ Bùi Vũ Hùng',
@@ -33,6 +35,7 @@ class OphthalmologyScheduleScreen extends StatelessWidget {
         experience: '15 năm kinh nghiệm',
         schedule: '10 : 00 sáng',
         accent: Color(0xFF43A047),
+        imagePath: 'assets/anhbs/bs_mat_3.png',
       ),
       const Doctor(
         name: 'Bác sĩ Hoàng Thị Minh Châu',
@@ -40,6 +43,7 @@ class OphthalmologyScheduleScreen extends StatelessWidget {
         experience: '8 năm kinh nghiệm',
         schedule: '11 : 00 sáng',
         accent: Color(0xFFE53935),
+        imagePath: 'assets/anhbs/bs_mat_4.png',
       ),
     ];
 
@@ -155,7 +159,7 @@ class _OphthalmologyDoctorScheduleScreenState
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
-                            'assets/images/doctor_photo.png', // TODO(IMAGE): change to doctor photo asset path.
+                            widget.doctor.imagePath,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) => Icon(
                               Icons.person,
@@ -593,6 +597,7 @@ class Doctor {
   final String experience;
   final String schedule;
   final Color accent;
+  final String imagePath;
 
   const Doctor({
     required this.name,
@@ -600,6 +605,7 @@ class Doctor {
     required this.experience,
     required this.schedule,
     required this.accent,
+    required this.imagePath,
   });
 }
 
@@ -645,7 +651,7 @@ class _DoctorCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
-                    'assets/images/doctor_photo.png', // TODO(IMAGE): change to doctor photo asset path.
+                    doctor.imagePath,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.person,

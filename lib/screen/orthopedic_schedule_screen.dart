@@ -13,21 +13,21 @@ class OrthopedicScheduleScreen extends StatelessWidget {
         title: 'Tiến sĩ',
         experience: '20 năm kinh nghiệm',
         schedule: '8 : 00 sáng',
-        imagePath: 'assets/images/xk_bs_1.png',
+        imagePath: 'assets/anhbs/bs_xk_1.png',
       ),
       const _DoctorItem(
         name: 'Bác sĩ Lê Quốc Việt',
         title: 'Tiến sĩ, CKII',
         experience: '40 năm kinh nghiệm',
         schedule: '9 : 00 sáng',
-        imagePath: 'assets/images/xk_bs_2.png',
+        imagePath: 'assets/anhbs/bs_xk_2.png',
       ),
       const _DoctorItem(
         name: 'Bác sĩ Lê Thị Liễu',
         title: 'Tiến sĩ',
         experience: '20 năm kinh nghiệm',
         schedule: '3 : 30 sáng',
-        imagePath: 'assets/images/xk_bs_3.png',
+        imagePath: 'assets/anhbs/bs_xk_3.png',
       ),
     ];
 

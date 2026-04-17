@@ -76,6 +76,24 @@ flutter:
     - assets/images/taimuihong.png
     - assets/images/mat.png
     - assets/images/xuongkhop.png
+
+    - assets/anhbs/bs_dl_1.png
+    - assets/anhbs/bs_dl_2.png
+    - assets/anhbs/bs_dl_3.png
+    - assets/anhbs/bs_dl_4.png
+    - assets/anhbs/bs_rhm_1.png
+    - assets/anhbs/bs_rhm_2.png
+    - assets/anhbs/bs_rhm_3.png
+    - assets/anhbs/bs_tmh_1.png
+    - assets/anhbs/bs_tmh_2.png
+    - assets/anhbs/bs_tmh_3.png
+    - assets/anhbs/bs_mat_1.png
+    - assets/anhbs/bs_mat_2.png
+    - assets/anhbs/bs_mat_3.png
+    - assets/anhbs/bs_mat_4.png
+    - assets/anhbs/bs_xk_1.png
+    - assets/anhbs/bs_xk_2.png
+    - assets/anhbs/bs_xk_3.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

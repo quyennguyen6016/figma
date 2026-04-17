@@ -13,21 +13,21 @@ class EntScheduleScreen extends StatelessWidget {
         title: 'Phó giáo sư, Tiến sĩ',
         experience: '25 năm kinh nghiệm',
         schedule: '8 : 00 sáng',
-        imagePath: 'assets/images/tmh_bs_1.png',
+        imagePath: 'assets/anhbs/bs_tmh_1.png',
       ),
       const _DoctorItem(
         name: 'Bác sĩ Nguyễn Nhật Linh',
         title: 'Tiến sĩ, BSC',
         experience: '30 năm kinh nghiệm',
         schedule: '9 : 30 sáng',
-        imagePath: 'assets/images/tmh_bs_2.png',
+        imagePath: 'assets/anhbs/bs_tmh_2.png',
       ),
       const _DoctorItem(
         name: 'Bác sĩ Hoàng Thị Hòa Bình',
         title: 'CKII',
         experience: '10 năm kinh nghiệm',
         schedule: '2 : 30 sáng',
-        imagePath: 'assets/images/tmh_bs_3.png',
+        imagePath: 'assets/anhbs/bs_tmh_3.png',
       ),
     ];
 

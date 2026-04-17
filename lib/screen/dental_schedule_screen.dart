@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // răng hàm mặt
 
 class DentalScheduleScreen extends StatelessWidget {
@@ -12,21 +13,21 @@ class DentalScheduleScreen extends StatelessWidget {
         title: 'CKII',
         experience: '30 năm kinh nghiệm',
         schedule: '8 : 00 sáng',
-        imagePath: 'assets/images/rhm_bs_1.png',
+        imagePath: 'assets/anhbs/bs_rhm_1.png',
       ),
       const _DoctorItem(
         name: 'Bác sĩ Nguyễn Hiếu Tùng',
         title: 'Tiến sĩ',
         experience: '10 năm kinh nghiệm',
         schedule: '9 : 30 sáng',
-        imagePath: 'assets/images/rhm_bs_2.png',
+        imagePath: 'assets/anhbs/bs_rhm_2.png',
       ),
       const _DoctorItem(
         name: 'Bác sĩ Đàm Ngọc Trân',
         title: 'Tiến sĩ',
         experience: '20 năm kinh nghiệm',
         schedule: '2 : 30 chiều',
-        imagePath: 'assets/images/rhm_bs_3.png',
+        imagePath: 'assets/anhbs/bs_rhm_3.png',
       ),
     ];
 
