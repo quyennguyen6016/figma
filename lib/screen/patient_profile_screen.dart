@@ -115,7 +115,6 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // TODO(IMAGE): Replace this avatar placeholder with the patient's profile photo.
                           Stack(
                             clipBehavior: Clip.none,
                             children: [
@@ -132,9 +131,14 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                 ),
                                 child: ClipOval(
                                   child: Image.asset(
-                                    'assets/images/patient_avatar.png', // TODO(IMAGE): change to your patient avatar asset path.
+                                    'assets/images/patient_avatar.png',
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) => const Icon(
+                                    errorBuilder: (
+                                      context,
+                                      error,
+                                      stackTrace,
+                                    ) =>
+                                        const Icon(
                                       Icons.person,
                                       size: 60,
                                       color: Color(0xFF7D8795),
@@ -217,9 +221,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                           ),
                           TextButton.icon(
                             onPressed: () async {
-                              final updated = await Navigator.of(context).push<bool>(
+                              final updated =
+                                  await Navigator.of(context).push<bool>(
                                 MaterialPageRoute(
-                                  builder: (_) => const PatientProfileEditScreen(),
+                                  builder: (_) =>
+                                      const PatientProfileEditScreen(),
                                 ),
                               );
                               if (updated == true && mounted) {

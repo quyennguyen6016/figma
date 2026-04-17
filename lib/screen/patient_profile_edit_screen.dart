@@ -54,7 +54,11 @@ class _PatientProfileEditScreenState extends State<PatientProfileEditScreen> {
       final month = int.tryParse(parts[1]);
       final year = int.tryParse(parts[2]);
       if (day != null && month != null && year != null) {
-        return DateTime(year, month, day);
+        return DateTime.tryParse(
+          '${year.toString().padLeft(4, '0')}-'
+          '${month.toString().padLeft(2, '0')}-'
+          '${day.toString().padLeft(2, '0')}',
+        );
       }
     }
     return null;
@@ -199,7 +203,8 @@ class _PatientProfileEditScreenState extends State<PatientProfileEditScreen> {
                             controller: _dateController,
                             readOnly: true,
                             onTap: _pickDate,
-                            decoration: _inputDecoration('Ngày sinh').copyWith(
+                            decoration:
+                                _inputDecoration('Ngày sinh').copyWith(
                               suffixIcon: const Icon(
                                 Icons.calendar_month_outlined,
                               ),

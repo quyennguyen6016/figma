@@ -19,16 +19,20 @@ class AppointmentService {
   AppointmentService._internal();
 
   Future<bool> saveAppointment(Appointment appointment) async {
-    final payload = Map<String, dynamic>.from(appointment.toJson());
-    payload['status'] = _normalizeStatus(payload['status']?.toString());
+    try {
+      final payload = Map<String, dynamic>.from(appointment.toJson());
+      payload['status'] = _normalizeStatus(payload['status']?.toString());
 
-    final response = await http.post(
-      Uri.parse('$_baseUrl/api/appointments/'),
-      headers: AuthService().authorizedJsonHeaders(),
-      body: jsonEncode(payload),
-    );
+      final response = await http.post(
+        Uri.parse('$_baseUrl/api/appointments/'),
+        headers: AuthService().authorizedJsonHeaders(),
+        body: jsonEncode(payload),
+      );
 
-    return response.statusCode >= 200 && response.statusCode < 300;
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<List<Appointment>> getAllAppointments() async {
@@ -85,11 +89,13 @@ class AppointmentService {
   }
 
   Future<void> updateAppointmentStatusById(String id, String newStatus) async {
-    await http.patch(
-      Uri.parse('$_baseUrl/api/appointments/$id/'),
-      headers: AuthService().authorizedJsonHeaders(),
-      body: jsonEncode({'status': _normalizeStatus(newStatus)}),
-    );
+    try {
+      await http.patch(
+        Uri.parse('$_baseUrl/api/appointments/$id/'),
+        headers: AuthService().authorizedJsonHeaders(),
+        body: jsonEncode({'status': _normalizeStatus(newStatus)}),
+      );
+    } catch (_) {}
   }
 
   Future<bool> updateAppointmentById(
@@ -97,18 +103,22 @@ class AppointmentService {
     required String status,
     String? medicalNote,
   }) async {
-    final payload = <String, dynamic>{'status': _normalizeStatus(status)};
-    if (medicalNote != null) {
-      payload['medical_note'] = medicalNote;
+    try {
+      final payload = <String, dynamic>{'status': _normalizeStatus(status)};
+      if (medicalNote != null) {
+        payload['medical_note'] = medicalNote;
+      }
+
+      final response = await http.patch(
+        Uri.parse('$_baseUrl/api/appointments/$id/'),
+        headers: AuthService().authorizedJsonHeaders(),
+        body: jsonEncode(payload),
+      );
+
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (_) {
+      return false;
     }
-
-    final response = await http.patch(
-      Uri.parse('$_baseUrl/api/appointments/$id/'),
-      headers: AuthService().authorizedJsonHeaders(),
-      body: jsonEncode(payload),
-    );
-
-    return response.statusCode >= 200 && response.statusCode < 300;
   }
 
   Future<void> deleteAppointment(int index) async {
@@ -120,10 +130,12 @@ class AppointmentService {
   }
 
   Future<void> deleteAppointmentById(String id) async {
-    await http.delete(
-      Uri.parse('$_baseUrl/api/appointments/$id/'),
-      headers: AuthService().authorizedJsonHeaders(),
-    );
+    try {
+      await http.delete(
+        Uri.parse('$_baseUrl/api/appointments/$id/'),
+        headers: AuthService().authorizedJsonHeaders(),
+      );
+    } catch (_) {}
   }
 
   Future<int> countByStatus(String status) async {

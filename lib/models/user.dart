@@ -41,11 +41,11 @@ class User {
       password: json['password'] as String,
       role: json['role'] as String,
       fullName: (json['fullName'] ?? json['full_name'] ?? '').toString(),
-      dateOfBirth: (json['dateOfBirth'] ?? json['date_of_birth'] ?? '')
-          .toString(),
+      dateOfBirth:
+          (json['dateOfBirth'] ?? json['date_of_birth'] ?? '').toString(),
       gender: (json['gender'] ?? '').toString(),
-      phoneNumber: (json['phoneNumber'] ?? json['phone_number'] ?? '')
-          .toString(),
+      phoneNumber:
+          (json['phoneNumber'] ?? json['phone_number'] ?? '').toString(),
       insuranceNumber:
           (json['insuranceNumber'] ?? json['insurance_number'] ?? '').toString(),
       address: (json['address'] ?? '').toString(),
@@ -62,7 +62,8 @@ class User {
   }
 
   int? get age {
-    final birthDate = DateTime.tryParse(dateOfBirth) ?? _parseSlashDate(dateOfBirth);
+    final birthDate =
+        DateTime.tryParse(dateOfBirth) ?? _parseSlashDate(dateOfBirth);
     if (birthDate == null) return null;
 
     final now = DateTime.now();
@@ -99,6 +100,19 @@ class User {
     final year = int.tryParse(parts[2]);
     if (day == null || month == null || year == null) return null;
 
-    return DateTime(year, month, day);
+    final parsed = DateTime.tryParse(
+      '${year.toString().padLeft(4, '0')}-'
+      '${month.toString().padLeft(2, '0')}-'
+      '${day.toString().padLeft(2, '0')}',
+    );
+
+    if (parsed == null ||
+        parsed.year != year ||
+        parsed.month != month ||
+        parsed.day != day) {
+      return null;
+    }
+
+    return parsed;
   }
 }
