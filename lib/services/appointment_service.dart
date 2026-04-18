@@ -1,15 +1,16 @@
 ﻿import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import '../models/appointment.dart';
 import 'auth_service.dart';
 
 class AppointmentService {
   static final AppointmentService _instance = AppointmentService._internal();
+
+  // Cấu hình URL cơ sở từ môi trường hoặc mặc định
   static const String _baseUrl = String.fromEnvironment(
     'BACKEND_BASE_URL',
-    defaultValue: 'http://127.0.0.1:8000',
+    defaultValue:
+        'http://127.0.0.1:8000', // Đổi thành http://10.0.2.2:8000 nếu dùng Android Emulator
   );
 
   factory AppointmentService() {
@@ -18,6 +19,53 @@ class AppointmentService {
 
   AppointmentService._internal();
 
+  // ---------------------------------------------------------------------------
+  // 1. NGHIỆP VỤ CHUYÊN KHOA & LỊCH TRÌNH (DATABASE DRIVEN)
+  // ---------------------------------------------------------------------------
+
+  /// Lấy danh sách chuyên khoa từ bảng public.appointments_specialty
+  Future<List<Map<String, dynamic>>> getSpecialties() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/appointments/specialties/'),
+        headers: AuthService().authorizedJsonHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.cast<Map<String, dynamic>>();
+      }
+      return [];
+    } catch (e) {
+      print("Lỗi kết nối lấy chuyên khoa: $e");
+      return [];
+    }
+  }
+
+  /// Lấy lịch làm việc của bác sĩ từ bảng public.appointments_doctorschedule
+  Future<List<Map<String, dynamic>>> getDoctorSchedule(int doctorId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/appointments/schedules/?doctor_id=$doctorId'),
+        headers: AuthService().authorizedJsonHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.cast<Map<String, dynamic>>();
+      }
+      return [];
+    } catch (e) {
+      print("Lỗi lấy lịch bác sĩ: $e");
+      return [];
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 2. QUẢN LÝ LỊCH HẸN (APPOINTMENTS)
+  // ---------------------------------------------------------------------------
+
+  /// Lưu lịch hẹn mới vào database
   Future<bool> saveAppointment(Appointment appointment) async {
     final payload = Map<String, dynamic>.from(appointment.toJson());
     payload['status'] = _normalizeStatus(payload['status']?.toString());
@@ -31,6 +79,7 @@ class AppointmentService {
     return response.statusCode >= 200 && response.statusCode < 300;
   }
 
+  /// Lấy tất cả lịch hẹn và xử lý ánh xạ snake_case -> camelCase
   Future<List<Appointment>> getAllAppointments() async {
     try {
       final response = await http.get(
@@ -38,9 +87,7 @@ class AppointmentService {
         headers: AuthService().authorizedJsonHeaders(),
       );
 
-      if (response.statusCode < 200 || response.statusCode >= 300) {
-        return [];
-      }
+      if (response.statusCode < 200 || response.statusCode >= 300) return [];
 
       final decoded = jsonDecode(response.body);
       final List<dynamic> list = decoded is List<dynamic>
@@ -64,34 +111,7 @@ class AppointmentService {
     }
   }
 
-  Future<List<Appointment>> getAppointmentsByStatus(String status) async {
-    final all = await getAllAppointments();
-    final normalized = _normalizeStatus(status);
-    return all.where((a) => a.status == normalized).toList();
-  }
-
-  Future<List<Appointment>> getAppointmentsByDoctor(String doctorName) async {
-    final all = await getAllAppointments();
-    return all.where((a) => a.doctorName == doctorName).toList();
-  }
-
-  Future<void> updateAppointmentStatus(int index, String newStatus) async {
-    final all = await getAllAppointments();
-
-    if (index >= 0 && index < all.length) {
-      final appointment = all[index];
-      await updateAppointmentStatusById(appointment.id, newStatus);
-    }
-  }
-
-  Future<void> updateAppointmentStatusById(String id, String newStatus) async {
-    await http.patch(
-      Uri.parse('$_baseUrl/api/appointments/$id/'),
-      headers: AuthService().authorizedJsonHeaders(),
-      body: jsonEncode({'status': _normalizeStatus(newStatus)}),
-    );
-  }
-
+  /// Cập nhật trạng thái và ghi chú y khoa (Dành cho bác sĩ)
   Future<bool> updateAppointmentById(
     String id, {
     required String status,
@@ -111,14 +131,7 @@ class AppointmentService {
     return response.statusCode >= 200 && response.statusCode < 300;
   }
 
-  Future<void> deleteAppointment(int index) async {
-    final all = await getAllAppointments();
-
-    if (index >= 0 && index < all.length) {
-      await deleteAppointmentById(all[index].id);
-    }
-  }
-
+  /// Xóa lịch hẹn theo ID
   Future<void> deleteAppointmentById(String id) async {
     await http.delete(
       Uri.parse('$_baseUrl/api/appointments/$id/'),
@@ -126,19 +139,11 @@ class AppointmentService {
     );
   }
 
-  Future<int> countByStatus(String status) async {
-    final all = await getAllAppointments();
-    final normalized = _normalizeStatus(status);
-    return all.where((a) => a.status == normalized).length;
-  }
+  // ---------------------------------------------------------------------------
+  // 3. CÁC HÀM TRỢ GIÚP (HELPER METHODS)
+  // ---------------------------------------------------------------------------
 
-  Future<void> clearAll() async {
-    final all = await getAllAppointments();
-    for (final item in all) {
-      await deleteAppointmentById(item.id);
-    }
-  }
-
+  /// Ánh xạ các trường từ Database (PostgreSQL) sang Model Flutter
   Map<String, dynamic> _normalizeAppointmentJson(Map<String, dynamic> json) {
     return {
       'id': json['id']?.toString() ?? '',
@@ -170,47 +175,21 @@ class AppointmentService {
     };
   }
 
+  /// Chuẩn hóa trạng thái để khớp với logic Backend
   String _normalizeStatus(String? raw) {
     final value = (raw ?? '').trim().toLowerCase();
-
     if (value.isEmpty) return 'pending';
-
-    if (value == 'pending' ||
-        value == 'cho kham' ||
-        value == 'chờ khám' ||
-        value == 'chá» khã¡m') {
-      return 'pending';
-    }
-
-    if (value == 'in_progress' ||
-        value == 'dang kham' ||
-        value == 'đang khám' ||
-        value == 'ä‘ang khã¡m') {
+    if (['pending', 'cho kham', 'chờ khám'].contains(value)) return 'pending';
+    if (['in_progress', 'dang kham', 'đang khám'].contains(value))
       return 'in_progress';
-    }
-
-    if (value == 'completed' ||
-        value == 'xong' ||
-        value == 'da kham' ||
-        value == 'đã khám' ||
-        value == 'ä‘ã£ khã¡m') {
-      return 'completed';
-    }
-
-    if (value == 'cancelled' ||
-        value == 'huy' ||
-        value == 'hủy' ||
-        value == 'há»§y') {
-      return 'cancelled';
-    }
-
+    if (['completed', 'xong', 'đã khám'].contains(value)) return 'completed';
+    if (['cancelled', 'huy', 'hủy'].contains(value)) return 'cancelled';
     return value;
   }
 
   int _toInt(dynamic value) {
     if (value is int) return value;
     if (value is String) return int.tryParse(value) ?? 0;
-    if (value is double) return value.toInt();
     return 0;
   }
 }
